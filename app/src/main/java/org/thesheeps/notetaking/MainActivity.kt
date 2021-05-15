@@ -24,9 +24,9 @@ private lateinit var binding: ActivityMainBinding
 
         setSupportActionBar(binding.toolbar)
 
-        val navController = findNavController(R.id.nav_host_fragment_content_main)
-        appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
+//        val navController = findNavController(R.id.navHostFragment)
+//        appBarConfiguration = AppBarConfiguration(navController.graph)
+//        setupActionBarWithNavController(navController, appBarConfiguration)
 
         binding.fab.setOnClickListener { view ->
             Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -50,7 +50,7 @@ override fun onCreateOptionsMenu(menu: Menu): Boolean {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-    val navController = findNavController(R.id.nav_host_fragment_content_main)
+    val navController = findNavController(R.id.navHostFragment)
     return navController.navigateUp(appBarConfiguration)
             || super.onSupportNavigateUp()
     }
