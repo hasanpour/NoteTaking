@@ -9,5 +9,19 @@
         android:id="@+id/mainFragment"
         android:name="org.thesheeps.notetaking.MainFragment"
         android:label="main_fragment"
-        tools:layout="@layout/main_fragment" />
+        tools:layout="@layout/main_fragment">
+        <action
+            android:id="@+id/action_edit_note"
+            app:destination="@id/editorFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editorFragment"
+        android:name="org.thesheeps.notetaking.EditorFragment"
+        android:label="editor_fragment"
+        tools:layout="@layout/editor_fragment" >
+        <argument
+            android:name="noteId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

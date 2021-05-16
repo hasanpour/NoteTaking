@@ -13,12 +13,19 @@ class SampleDataProvider {
             Fusce vitae risus mattis, pretium lorem non, tempus erat. Pellentesque quis ante dignissim, lobortis ante at, aliquam tellus. Phasellus porttitor, nisl non feugiat ornare, sem elit rhoncus quam, ac dignissim orci felis vitae orci. Integer faucibus suscipit massa vitae pretium. Quisque a turpis elit. Cras odio lorem, tristique sit amet mattis vel, gravida nec ipsum. Nulla gravida arcu ipsum, eget suscipit urna finibus vitae. Aliquam semper leo nunc, tempus consectetur urna luctus ultricies.
         """.trimIndent()
 
+        /**
+         * Return an array of samples text
+         */
         fun getNotes() = arrayListOf<NoteEntity>(
             NoteEntity(1, getDate(0), sampleText1),
             NoteEntity(2, getDate(1), sampleText2),
             NoteEntity(3, getDate(2), sampleText3)
         )
 
+        /**
+         * Get [diff] as long number to avoid same creation time
+         * Return current date + [diff]
+         */
         private fun getDate(diff: Long): Date {
             return Date(Date().time + diff)
         }

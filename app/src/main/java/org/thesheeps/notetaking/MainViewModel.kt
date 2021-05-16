@@ -10,6 +10,7 @@ class MainViewModel : ViewModel() {
     val notesList = MutableLiveData<List<NoteEntity>>()
 
     init {
+        //Create some sample data
         notesList.value = SampleDataProvider.getNotes()
     }
 }
