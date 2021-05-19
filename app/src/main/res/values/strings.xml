@@ -11,4 +11,7 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="selecting_notes">selecting notes</string>
     <string name="enter_text">Enter text</string>
+    <string name="add_sample_data">Add sample data</string>
+    <string name="delete_selected_items">Delete selected item(s)</string>
+    <string name="delete_all_notes">Delete all notes</string>
 </resources>

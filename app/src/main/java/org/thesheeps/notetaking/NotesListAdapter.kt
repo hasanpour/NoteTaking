@@ -10,6 +10,9 @@ import org.thesheeps.notetaking.databinding.ListItemBinding
 class NotesListAdapter(private val notesList: List<NoteEntity>, private val listener: ListItemListener) :
     RecyclerView.Adapter<NotesListAdapter.ViewHolder>() {
 
+    //Use to store selected note
+    val selectedNotes = arrayListOf<NoteEntity>()
+
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val binding = ListItemBinding.bind(itemView)
     }
@@ -33,6 +36,27 @@ class NotesListAdapter(private val notesList: List<NoteEntity>, private val list
             root.setOnClickListener {
                 listener.onItemClick(note.id)
             }
+
+            /** Show checkmark when select a note and add it to [selectedNotes] for future reference */
+            fabSelectNote.setOnClickListener {
+                if (selectedNotes.contains(note)) {
+                    selectedNotes.remove(note)
+                    fabSelectNote.setImageResource(R.drawable.ic_note)
+                } else {
+                    selectedNotes.add(note)
+                    fabSelectNote.setImageResource(R.drawable.ic_check)
+                }
+                listener.onItemSelectionChanged()
+            }
+
+            //To retain selection on scroll
+            fabSelectNote.setImageResource(
+                if (selectedNotes.contains(note)) {
+                    R.drawable.ic_check
+                } else {
+                    R.drawable.ic_note
+                }
+            )
         }
     }
 
