@@ -1,14 +1,16 @@
 package org.thesheeps.notetaking
 
-import androidx.lifecycle.ViewModelProvider
+import android.app.Activity
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.thesheeps.notetaking.databinding.EditorFragmentBinding
@@ -22,7 +24,7 @@ class EditorFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         //Display checkmark as up button
         (activity as AppCompatActivity).supportActionBar?.let {
@@ -30,6 +32,14 @@ class EditorFragment : Fragment() {
             it.setHomeAsUpIndicator(R.drawable.ic_check)
         }
         setHasOptionsMenu(true)
+
+        //Change title of fragment
+        requireActivity().title =
+            if (args.noteId != NEW_NOTE_ID) {
+                getString(R.string.edit_note)
+            } else {
+                getString(R.string.new_note)
+            }
 
         //Handle back button pressed
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -41,8 +51,23 @@ class EditorFragment : Fragment() {
             }
         )
 
+        //Get data from save instance state if any
+        val savedNote = savedInstanceState?.getString(NOTE_TEXT_KEY)
+        val cursorStartPosition = savedInstanceState?.getInt(CURSOR_POSITION_START_KEY) ?: 0
+        val cursorEndPosition =
+            savedInstanceState?.getInt(CURSOR_POSITION_END_KEY) ?: cursorStartPosition
+
         binding = EditorFragmentBinding.inflate(inflater, container, false)
-        binding.editTextNote.setText("Note Id ${args.noteId} selected")
+        binding.editTextNote.setText("")
+
+        //Setting text of edit text
+        viewModel = ViewModelProvider(this).get(EditorViewModel::class.java)
+        viewModel.currentNote.observe(viewLifecycleOwner, {
+            binding.editTextNote.setText(savedNote ?: it.text)
+            binding.editTextNote.setSelection(cursorStartPosition, cursorEndPosition)
+        })
+        viewModel.getNoteById(args.noteId)
+
         return binding.root
     }
 
@@ -60,13 +85,29 @@ class EditorFragment : Fragment() {
      * Back to previous fragment
      */
     private fun saveAndReturn(): Boolean {
+
+        //Hide keyboard
+        val imm = requireActivity()
+            .getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.root.windowToken, 0)
+
+        //Save edited note to database
+        viewModel.currentNote.value?.text = binding.editTextNote.text.toString()
+        viewModel.updateNote()
+
         findNavController().navigateUp()
         return true
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(EditorViewModel::class.java)
+    /**
+     * Save text and cursor position on orientation change
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        with(binding.editTextNote) {
+            outState.putString(NOTE_TEXT_KEY, text.toString())
+            outState.putInt(CURSOR_POSITION_START_KEY, selectionStart)
+            outState.putInt(CURSOR_POSITION_END_KEY, selectionEnd)
+        }
+        super.onSaveInstanceState(outState)
     }
-
 }

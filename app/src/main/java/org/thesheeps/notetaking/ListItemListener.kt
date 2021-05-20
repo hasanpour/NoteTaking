@@ -1,9 +1,8 @@
 package org.thesheeps.notetaking
 
-import org.thesheeps.notetaking.data.NoteEntity
-
 /**
- * Listen to click on note item
+ * An interface for listen to click on notes or fab.
+ * Also listen on selected note changed.
  */
 interface ListItemListener {
     fun onItemClick(noteId: Int)

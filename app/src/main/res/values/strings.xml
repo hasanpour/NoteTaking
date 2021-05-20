@@ -14,4 +14,7 @@
     <string name="add_sample_data">Add sample data</string>
     <string name="delete_selected_items">Delete selected item(s)</string>
     <string name="delete_all_notes">Delete all notes</string>
+    <string name="add_new_note">Add new note</string>
+    <string name="edit_note">Edit note</string>
+    <string name="new_note">New note</string>
 </resources>

@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import org.thesheeps.notetaking.data.NoteEntity
 import org.thesheeps.notetaking.databinding.MainFragmentBinding
 
 class MainFragment : Fragment(), ListItemListener {
@@ -29,8 +30,20 @@ class MainFragment : Fragment(), ListItemListener {
         //Show option menu
         setHasOptionsMenu(true)
 
+        //Set title of fragment
+        requireActivity().title = getString(R.string.app_name)
+
         binding = MainFragmentBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+
+        //Handle create new note button pressed
+        binding.fabAddNote.setOnClickListener {
+            onItemClick(NEW_NOTE_ID)
+        }
+
+        //Get selected notes from save instance state if any
+        val selectedNotes =
+            savedInstanceState?.getParcelableArrayList<NoteEntity>(SELECTED_NOTES_KEY)
 
         //Set recycler view style
         with(binding.recyclerViewNotes) {
@@ -44,6 +57,7 @@ class MainFragment : Fragment(), ListItemListener {
             adapter = NotesListAdapter(it, this@MainFragment)
             binding.recyclerViewNotes.adapter = adapter
             binding.recyclerViewNotes.layoutManager = LinearLayoutManager(activity)
+            adapter.selectedNotes.addAll(selectedNotes ?: emptyList())
         })
 
         return binding.root
@@ -105,7 +119,7 @@ class MainFragment : Fragment(), ListItemListener {
     }
 
     /**
-     * Open edit fragment when click a note
+     * Open edit fragment when click a note or fab
      */
     override fun onItemClick(noteId: Int) {
         val action = MainFragmentDirections.actionEditNote(noteId)
@@ -117,5 +131,15 @@ class MainFragment : Fragment(), ListItemListener {
      */
     override fun onItemSelectionChanged() {
         requireActivity().invalidateOptionsMenu()
+    }
+
+    /**
+     * Save selected notes on orientation change
+     */
+    override fun onSaveInstanceState(outState: Bundle) {
+        if (this::adapter.isInitialized) {
+            outState.putParcelableArrayList(SELECTED_NOTES_KEY, adapter.selectedNotes)
+        }
+        super.onSaveInstanceState(outState)
     }
 }
