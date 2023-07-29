@@ -11,6 +11,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import org.thesheeps.notetaking.databinding.EditorFragmentBinding
@@ -62,11 +63,21 @@ class EditorFragment : Fragment() {
 
         //Setting text of edit text
         viewModel = ViewModelProvider(this).get(EditorViewModel::class.java)
-        viewModel.currentNote.observe(viewLifecycleOwner, {
+        viewModel.currentNote.asLiveData().observe(viewLifecycleOwner, {
             binding.editTextNote.setText(savedNote ?: it.text)
             binding.editTextNote.setSelection(cursorStartPosition, cursorEndPosition)
         })
         viewModel.getNoteById(args.noteId)
+
+//TODO: Use repeatOnLifecycle when androidx.lifecycle 2.4.0 released
+
+//        viewLifecycleOwner.lifecycle.repeatOnLifecycle(STARTED) {
+//            viewModel.currentNote.collect{
+//                binding.editTextNote.setText(savedNote ?: it.text)
+//                binding.editTextNote.setSelection(cursorStartPosition, cursorEndPosition)
+//            }
+//            viewModel.getNoteById(args.noteId)
+//        }
 
         return binding.root
     }

@@ -1,7 +1,7 @@
 package org.thesheeps.notetaking.data
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 /**
  * All database operations
@@ -16,7 +16,7 @@ interface NoteDao {
     fun insertAll(notes: List<NoteEntity>)
 
     @Query("SELECT * FROM notes ORDER BY date ASC")
-    fun getNotes(): LiveData<List<NoteEntity>>
+    fun getNotes(): Flow<List<NoteEntity>>
 
     @Query("SELECT * FROM notes WHERE id = :id")
     fun getNoteById(id: Int): NoteEntity?

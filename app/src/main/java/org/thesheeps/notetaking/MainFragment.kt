@@ -7,6 +7,7 @@ import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,7 +54,8 @@ class MainFragment : Fragment(), ListItemListener {
         }
 
         //Show data on recycler view
-        viewModel.notesList?.observe(viewLifecycleOwner, {
+        //TODO: Use repeatOnLifecycle when androidx.lifecycle 2.4.0 released
+        viewModel.notesList?.asLiveData()?.observe(viewLifecycleOwner, {
             adapter = NotesListAdapter(it, this@MainFragment)
             binding.recyclerViewNotes.adapter = adapter
             binding.recyclerViewNotes.layoutManager = LinearLayoutManager(activity)
